@@ -2,6 +2,7 @@
 using Sistema.Pedidos.Domain;
 using Sistema.Pedidos.ValueObjetcs;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sistema.Pedidos
@@ -22,7 +23,51 @@ namespace Sistema.Pedidos
 
             //InserirDados();
             //InserirDadosEmMassa();
-            ConsultarDados();
+            //ConsultarDados();
+            //CadastrarPedido();
+            ConsultarPedidoCarregamentoAdiantado();
+        }
+
+        private static void ConsultarPedidoCarregamentoAdiantado()
+        {
+            using var db = new Data.ApplicationContext();
+            var pedidos = db
+                .Pedidos
+                .Include(p => p.Itens)
+                    .ThenInclude(p => p.Produto)
+                .ToList();
+
+            Console.WriteLine(pedidos.Count);
+        }
+
+        private static void CadastrarPedido()
+        {
+            using var db = new Data.ApplicationContext();
+
+            var cliente = db.Clientes.FirstOrDefault();
+            var produto = db.Produtos.FirstOrDefault();
+
+            var pedido = new Pedido
+            {
+                ClienteId = cliente.Id,
+                IniciadoEm = DateTime.Now,
+                FinalizadoEm = DateTime.Now,
+                TipoFrete = TipoFrete.SemFrete,
+                Status = StatusPedido.Analise,
+                Observacao = "Pedido Teste",
+                Itens = new List<PedidoItem>
+                 {
+                     new PedidoItem
+                     {
+                         ProdutoId = produto.Id,
+                         Desconto = 0,
+                         Quantidade = 1,
+                         Valor = 10,
+                     }
+                 }
+            };
+            db.Pedidos.Add(pedido);
+            db.SaveChanges();
         }
 
         private static void ConsultarDados()
@@ -33,7 +78,7 @@ namespace Sistema.Pedidos
                 .Where(p => p.Id > 0)
                 .OrderBy(p => p.Id)
                 .ToList();
-            foreach(var cliente in consultaPorMetodo)
+            foreach (var cliente in consultaPorMetodo)
             {
                 Console.WriteLine($"Consultando cliente: {cliente.Id}");
                 //db.Clientes.Find(cliente.Id);
