@@ -22,7 +22,11 @@ namespace Sistema.Pedidos.Data
                 p => p.EnableRetryOnFailure(
                      maxRetryCount: 2,
                      maxRetryDelay: TimeSpan.FromSeconds(5),
-                     errorNumbersToAdd: null));
+                     errorNumbersToAdd: null)
+                //Alterando o nome da tabela de histórico de migrações para que
+                //O EF Core não crie tabelas com nome EFMigrationsHistory
+                //Assim que podemos informar o nome padrão da empresa da tabela que queremos.
+                .MigrationsHistoryTable("curso_ef_core"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
