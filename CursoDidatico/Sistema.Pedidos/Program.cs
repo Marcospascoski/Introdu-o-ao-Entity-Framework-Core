@@ -25,9 +25,33 @@ namespace Sistema.Pedidos
             //InserirDadosEmMassa();
             //ConsultarDados();
             //CadastrarPedido();
-            ConsultarPedidoCarregamentoAdiantado();
+            //ConsultarPedidoCarregamentoAdiantado();
+            AtualizarDados();
         }
 
+        private static void AtualizarDados() 
+        {
+            using var db = new Data.ApplicationContext();
+            //var cliente = db.Clientes.Find(1);
+            //cliente.Nome = "Cliente Alterado Passo 2";
+
+            var cliente = new Cliente
+            {
+                Id = 1
+            };
+
+            var clienteDesconectado = new
+            {
+                Nome = "Cliente Desconectado Teste 1",
+                Telefone = "999222054"
+            };
+            db.Attach(cliente); 
+            db.Entry(cliente).CurrentValues.SetValues(clienteDesconectado);
+            
+            //db.Entry(cliente).State = EntityState.Modified;
+            //db.Clientes.Update(cliente);
+            db.SaveChanges();
+        }
         private static void ConsultarPedidoCarregamentoAdiantado()
         {
             using var db = new Data.ApplicationContext();
