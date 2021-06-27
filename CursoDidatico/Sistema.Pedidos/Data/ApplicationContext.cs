@@ -17,7 +17,12 @@ namespace Sistema.Pedidos.Data
         {
             optionsBuilder.UseLoggerFactory(_logger)
                 .EnableSensitiveDataLogging()
-                .UseSqlServer("Server=127.0.0.1,1433;Database=SistemaPedido;User Id=sa;Password=test-123;");
+                .UseSqlServer("Server=127.0.0.1,1433;Database=SistemaPedido;User Id=sa;Password=test-123;",
+                //Resiliência da conexão
+                p => p.EnableRetryOnFailure(
+                     maxRetryCount: 2,
+                     maxRetryDelay: TimeSpan.FromSeconds(5),
+                     errorNumbersToAdd: null));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
